@@ -1,4 +1,16 @@
 BIN = Bin
-TEMP = Temp
+TEMP = $(BIN)/Temp
+SOURCE = Source
+
+NAME = Sectional
+SECTION_LOADER_NAME = SectionLoader
+
+All: Sectional Run
 
 Sectional:
+	gcc -c $(SOURCE)/$(SECTION_LOADER_NAME).c -o $(TEMP)/$(SECTION_LOADER_NAME).o
+	gcc -c $(SOURCE)/$(NAME).c -o $(TEMP)/$(NAME).o
+	gcc $(TEMP)/$(NAME).o $(TEMP)/$(SECTION_LOADER_NAME).o -o $(BIN)/$(NAME).exe
+
+Run:
+	(cd $(BIN) && $(NAME).exe)
