@@ -16,18 +16,12 @@ Section *Sections = NULL;
 int ProgramArgCount = 0;
 char **ProgramArgValues = NULL;
 
-#ifdef _WIN32
-
-#define SECTION_FILE_END ".dll"
-
-#endif
-
 int IsSection(const struct dirent *entry)
 {
     int isSection = 1;
 
-    for(size_t x = 0, sectionFileEndLength = strlen(SECTION_FILE_END); x < sectionFileEndLength; x++)
-        isSection &= SECTION_FILE_END[x] == entry->d_name[entry->d_namlen - sectionFileEndLength + x];
+    for(size_t x = 0, sectionFileEndLength = strlen(SECTION_FILE_EXTENSION); x < sectionFileEndLength; x++)
+        isSection &= SECTION_FILE_EXTENSION[x] == entry->d_name[entry->d_namlen - sectionFileEndLength + x];
     
     return isSection;
 }
@@ -107,7 +101,7 @@ void Exit()
     for(int x = 0; x < SectionsCount; x++)
     {
         Section *section = Sections + x;
-        
+
         CallSectionEntryPoint(section, __STRINGIFY(_SECTION_EXIT_NAME), ProgramArgCount, ProgramArgValues);
         FreeSection(section);
     }
