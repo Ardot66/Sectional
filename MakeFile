@@ -1,5 +1,5 @@
 BIN = Bin
-TEMP = $(BIN)/Temp
+TEMP = Temp
 SOURCE = Source
 TESTS = Tests
 
