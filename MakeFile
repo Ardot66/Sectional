@@ -8,7 +8,8 @@ NAME = Sectional
 TESTS_NAME = Tests
 SECTION_LOADER_NAME = SectionLoader
 
-All: ClearBin Sectional Main Test Run
+Debug: ClearBin Sectional Main Test Run
+Release: ClearBin Sectional Main
 
 ClearBin:
 	(cd $(BIN) && del /q $(NAME).exe lib$(TESTS_NAME).dll lib$(NAME).dll)
@@ -16,15 +17,15 @@ ClearBin:
 Sectional:
 	gcc -fPIC -c $(SOURCE)/$(SECTION_LOADER_NAME).c -o $(TEMP)/$(SECTION_LOADER_NAME).o
 	gcc -fPIC -c $(SOURCE)/$(NAME).c -o $(TEMP)/$(NAME).o
-	gcc -shared $(TEMP)/$(SECTION_LOADER_NAME).o $(TEMP)/$(NAME).o -o $(BIN)/lib$(NAME).dll
+	gcc -s -shared $(TEMP)/$(SECTION_LOADER_NAME).o $(TEMP)/$(NAME).o -o $(BIN)/lib$(NAME).dll
 
 Main:
 	gcc -c $(SOURCE)/$(MAIN_NAME).c -o $(TEMP)/$(MAIN_NAME).o
-	gcc -L$(BIN) -l$(NAME) $(TEMP)/$(MAIN_NAME).o -o $(BIN)/$(NAME).exe
+	gcc -s -L$(BIN) -l$(NAME) $(TEMP)/$(MAIN_NAME).o -o $(BIN)/$(NAME).exe
 
 Test:
 	gcc -fPIC -c -o $(TEMP)/lib$(TESTS_NAME).o $(TESTS)/$(TESTS_NAME).c
-	gcc -shared -L$(BIN) -l$(NAME) $(TEMP)/lib$(TESTS_NAME).o -o $(BIN)/lib$(TESTS_NAME).dll
+	gcc -s -shared -L$(BIN) -l$(NAME) $(TEMP)/lib$(TESTS_NAME).o -o $(BIN)/lib$(TESTS_NAME).dll
 
 Run:
 	(cd $(BIN) && $(NAME).exe)
