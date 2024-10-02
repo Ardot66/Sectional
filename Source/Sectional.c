@@ -5,6 +5,9 @@
 #include "Sectional.h"
 #include "SectionLoader.h"
 
+#define QUOTE(value) # value
+#define STRING(value) QUOTE(value)
+
 #define STARTING_SECTIONS_LENGTH 4
 
 int (*ProcessLoop)(int argCount, char **argValues);
@@ -102,7 +105,7 @@ void Exit()
     {
         Section *section = Sections + x;
 
-        CallSectionEntryPoint(section, __STRINGIFY(_SECTION_EXIT_NAME), ProgramArgCount, ProgramArgValues);
+        CallSectionEntryPoint(section, STRING(_SECTION_EXIT_NAME), ProgramArgCount, ProgramArgValues);
         FreeSection(section);
     }
 
@@ -138,17 +141,17 @@ int main(int argCount, char **argValues)
                 continue;
 
             Section *sectionPointer = AddSection(section);
-            CallSectionEntryPoint(sectionPointer, __STRINGIFY(_SECTION_INITIALIZE_NAME), argCount, argValues);
+            CallSectionEntryPoint(sectionPointer, STRING(_SECTION_INITIALIZE_NAME), argCount, argValues);
         }
 
         closedir(directory);
     }
 
     for(int x = 0; x < SectionsCount; x++)
-        CallSectionEntryPoint(Sections + x, __STRINGIFY(_SECTION_REGISTER_NAME), argCount, argValues);
+        CallSectionEntryPoint(Sections + x, STRING(_SECTION_REGISTER_NAME), argCount, argValues);
 
     for(int x = 0; x < SectionsCount; x++)
-        CallSectionEntryPoint(Sections + x, __STRINGIFY(_SECTION_READY_NAME), argCount, argValues);
+        CallSectionEntryPoint(Sections + x, STRING(_SECTION_READY_NAME), argCount, argValues);
 
     if(ProcessLoop != NULL)
         return ProcessLoop(argCount, argValues);
