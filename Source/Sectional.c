@@ -136,11 +136,9 @@ int main(int argCount, char **argValues)
 
             if(!LoadSection(entry->d_name, &section))
                 continue;
-            printf("Section loaded!\n");
 
             Section *sectionPointer = AddSection(section);
             CallSectionEntryPoint(sectionPointer, __STRINGIFY(_SECTION_INITIALIZE_NAME), argCount, argValues);
-
         }
 
         closedir(directory);
