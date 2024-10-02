@@ -13,6 +13,9 @@ size_t SectionsLength = 0;
 size_t SectionsCount = 0;
 Section *Sections = NULL;
 
+int ProgramArgCount = 0;
+char **ProgramArgValues = NULL;
+
 #ifdef _WIN32
 
 #define SECTION_FILE_END ".dll"
@@ -80,21 +83,46 @@ Section *AddSection(const Section section)
     return sectionPointer;
 }
 
+int GetSection(const size_t sectionIndex, Section **sectionDest)
+{
+    if(sectionIndex >= SectionsCount - 1)
+        return 0;
+
+    *sectionDest = Sections + sectionIndex;
+    return 1;
+}
+
+size_t GetSectionCount()
+{
+    return SectionsCount;
+}
+
+void SetProcessLoop(int (*processLoop)(int argCount, char **argValues))
+{
+    ProcessLoop = processLoop;
+}
+
 void Exit()
 {
     for(int x = 0; x < SectionsCount; x++)
     {
         Section *section = Sections + x;
-
-        // Figure out how to get args over here. Maybe use global variables?
-        CallSectionEntryPoint(section, __STRINGIFY(_SECTION_EXIT_NAME), 0, NULL);
+        
+        CallSectionEntryPoint(section, __STRINGIFY(_SECTION_EXIT_NAME), ProgramArgCount, ProgramArgValues);
         FreeSection(section);
     }
+
+    if(Sections != NULL)
+        free(Sections);
 }
 
 int main(int argCount, char **argValues)
 {
     atexit(Exit);
+
+    ProgramArgCount = argCount;
+    ProgramArgValues = argValues;
+
     SetSectionsLength(STARTING_SECTIONS_LENGTH);
 
     {

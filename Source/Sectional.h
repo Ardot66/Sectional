@@ -28,11 +28,13 @@ struct Section
 
 #endif
 
-// The function pointer to the function that will contain the program's process loop, if any.
-// If non-null, this function will be called right at the end of the main function.
-extern int (*ProcessLoop)(int argCount, char **argValues);
-
-extern Section *Sections;
+int CallSectionEntryPoint(const Section *section, const char *entryPointName, int argCount, char **argValues);
+void SetSectionsLength(size_t newLength);
+int RemoveSection(const size_t sectionIndex);
+Section *AddSection(const Section section);
+int GetSection(const size_t sectionIndex, Section **sectionDest);
+size_t GetSectionCount();
+void SetProcessLoop(int (*processLoop)(int argCount, char **argValues));
 
 #undef SECTION_ENTRY_POINT_RETURNS
 #undef SECTION_ENTRY_POINT_PARAMETERS
