@@ -9,8 +9,6 @@
 #define STRING(value) QUOTE(value)
 
 #define STARTING_SECTIONS_LENGTH 4
-#define CAT1(a, b) a ## b
-#define CAT(a, b) CAT1(a, b)
 
 #define PROGRAM_NAME ("libSectional" SECTION_FILE_EXTENSION)
 
