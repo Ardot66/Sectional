@@ -1,16 +1,25 @@
 BIN = Bin
 TEMP = $(BIN)/Temp
 SOURCE = Source
+TESTS = Tests
 
 NAME = Sectional
+TESTS_NAME = Tests
 SECTION_LOADER_NAME = SectionLoader
 
-All: Sectional Run
+All: ClearBin Sectional Test Run
+
+ClearBin:
+	(cd $(BIN) && del /q $(NAME).exe lib$(TESTS_NAME).dll)
 
 Sectional:
 	gcc -c $(SOURCE)/$(SECTION_LOADER_NAME).c -o $(TEMP)/$(SECTION_LOADER_NAME).o
 	gcc -c $(SOURCE)/$(NAME).c -o $(TEMP)/$(NAME).o
 	gcc $(TEMP)/$(NAME).o $(TEMP)/$(SECTION_LOADER_NAME).o -o $(BIN)/$(NAME).exe
+
+Test:
+	gcc -fPIC -c -o $(TEMP)/lib$(TESTS_NAME).o $(TESTS)/$(TESTS_NAME).c
+	gcc -shared $(TEMP)/lib$(TESTS_NAME).o -o $(BIN)/lib$(TESTS_NAME).dll
 
 Run:
 	(cd $(BIN) && $(NAME).exe)
