@@ -10,8 +10,6 @@
 
 #define STARTING_SECTIONS_LENGTH 4
 
-#define PROGRAM_NAME ("libSectional" SECTION_FILE_EXTENSION)
-
 int (*ProcessLoop)(int argCount, char **argValues);
 
 size_t SectionsLength = 0;
@@ -23,17 +21,7 @@ char **ProgramArgValues = NULL;
 
 int IsSection(const struct dirent *entry)
 {   
-    int isSection = 1;
-
-    for(size_t x = 0, sectionFileEndLength = strlen(SECTION_FILE_EXTENSION); x < sectionFileEndLength; x++)
-        isSection &= SECTION_FILE_EXTENSION[x] == entry->d_name[entry->d_namlen - sectionFileEndLength + x];
-    
-    int isProgramSection = 1;
-
-    for(size_t x = 0, programNameLength = strlen(PROGRAM_NAME); x < programNameLength; x++)
-        isProgramSection &= PROGRAM_NAME[x] == entry->d_name[entry->d_namlen - programNameLength + x];
-
-    return isSection & !isProgramSection;
+    return strcmp(entry->d_name + entry->d_namlen - strlen(SECTION_FILE_EXTENSION), SECTION_FILE_EXTENSION) == 0;
 }
 
 int CallSectionEntryPoint(const Section *section, const char *entryPointName, int argCount, char **argValues)
