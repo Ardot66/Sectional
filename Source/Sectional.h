@@ -26,4 +26,6 @@ int GetSection(const size_t sectionIndex, Section **sectionDest);
 size_t GetSectionCount();
 void SetProcessLoop(int (*processLoop)(int argCount, char **argValues));
 
+int SectionalMain(int argCount, char **argValues);
+
 #endif

@@ -9,6 +9,10 @@
 #define STRING(value) QUOTE(value)
 
 #define STARTING_SECTIONS_LENGTH 4
+#define CAT1(a, b) a ## b
+#define CAT(a, b) CAT1(a, b)
+
+#define PROGRAM_NAME ("libSectional" SECTION_FILE_EXTENSION)
 
 int (*ProcessLoop)(int argCount, char **argValues);
 
@@ -20,13 +24,18 @@ int ProgramArgCount = 0;
 char **ProgramArgValues = NULL;
 
 int IsSection(const struct dirent *entry)
-{
+{   
     int isSection = 1;
 
     for(size_t x = 0, sectionFileEndLength = strlen(SECTION_FILE_EXTENSION); x < sectionFileEndLength; x++)
         isSection &= SECTION_FILE_EXTENSION[x] == entry->d_name[entry->d_namlen - sectionFileEndLength + x];
     
-    return isSection;
+    int isProgramSection = 1;
+
+    for(size_t x = 0, programNameLength = strlen(PROGRAM_NAME); x < programNameLength; x++)
+        isProgramSection &= PROGRAM_NAME[x] == entry->d_name[entry->d_namlen - programNameLength + x];
+
+    return isSection & !isProgramSection;
 }
 
 int CallSectionEntryPoint(const Section *section, const char *entryPointName, int argCount, char **argValues)
@@ -57,7 +66,7 @@ void SetSectionsLength(size_t newLength)
 
 int RemoveSection(const size_t sectionIndex)
 {
-    if(sectionIndex >= SectionsCount - 1)
+    if(sectionIndex >= SectionsCount)
         return 0;
 
     for(int x = sectionIndex; x < SectionsCount - 1; x++)
@@ -82,7 +91,7 @@ Section *AddSection(const Section section)
 
 int GetSection(const size_t sectionIndex, Section **sectionDest)
 {
-    if(sectionIndex >= SectionsCount - 1)
+    if(sectionIndex >= SectionsCount)
         return 0;
 
     *sectionDest = Sections + sectionIndex;
@@ -113,7 +122,7 @@ void Exit()
         free(Sections);
 }
 
-int main(int argCount, char **argValues)
+int SectionalMain(int argCount, char **argValues)
 {
     atexit(Exit);
 
